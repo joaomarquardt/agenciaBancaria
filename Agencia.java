@@ -1,5 +1,7 @@
 package ex7;
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -54,6 +56,7 @@ public class Agencia {
 		String emailstring = email.getText();
 		String senhastring = String.copyValueOf(senha.getPassword());
 		
+		// Modificar isso aqui depois!!!!!
 		if (listaContas.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Esse email não está cadastrado no banco. Por favor, crie sua conta.", "[ERRO]", JOptionPane.PLAIN_MESSAGE);
 			menu();			
@@ -102,6 +105,8 @@ public class Agencia {
 		entUsuario.add(new JLabel("Confirme a senha: "));
 		entUsuario.add(confirmaSenha);
 		
+		JOptionPane.showMessageDialog(null, entUsuario);
+		
 		String emailstring = email.getText();
 		String senhastring = String.copyValueOf(senha.getPassword());
 		
@@ -112,17 +117,51 @@ public class Agencia {
 			} 
 		}
 		
-		if (!senhastring.equals(String.copyValueOf(confirmaSenha.getPassword()))) {
+		String erros = "";
+		
+		if (nome.getText().isBlank() || sobrenome.getText().isBlank()) {
+			erros += "\nO nome/sobrenome deve ser preenchido";
 			
-			JOptionPane.showMessageDialog(null, "Por favor, digite duas senhas iguais.", null, JOptionPane.PLAIN_MESSAGE);
+			// JOptionPane.showMessageDialog(null, "O nome/sobrenome deve ser preenchido", null, JOptionPane.PLAIN_MESSAGE);
+		}
+		
+		if (!emailstring.contains("@")) {
+			erros += "\nDigite um endereço de email válido";
+			
+			// JOptionPane.showMessageDialog(null, "Digite um endereço de email válido.", null, JOptionPane.PLAIN_MESSAGE);
+		}
+		
+		if (cpf.getText().length() != 11) {
+			erros += "\nO CPF deve ter 11 caracteres";
+			
+			// JOptionPane.showMessageDialog(null, "O CPF deve ter 11 caracteres", null, JOptionPane.PLAIN_MESSAGE);
+		}
+		
+		if (Integer.parseInt(idade.getText()) < 1 || Integer.parseInt(idade.getText()) > 150) {
+			erros += "\nDigite uma idade válida";
+		} 
+		
+		if (!senhastring.equals(String.copyValueOf(confirmaSenha.getPassword()))) {
+			erros += "\nAs senhas devem ser iguais";
+			
+			// JOptionPane.showMessageDialog(null, "Por favor, digite duas senhas iguais.", null, JOptionPane.PLAIN_MESSAGE);
+		}
+		
+		
+		if (erros.length() > 0) {
+			JTextArea area = new JTextArea(erros);
+			JPanel painel = new JPanel();
+			painel.add(area);
+			JOptionPane.showMessageDialog(null, painel, null, JOptionPane.PLAIN_MESSAGE);
 			criarConta();
+		} else {
+			JOptionPane.showMessageDialog(null, "Conta criada com sucesso!", "Login efetuado", JOptionPane.PLAIN_MESSAGE);
+			Pessoa pessoa = new Pessoa(nome.getText(), sobrenome.getText(), Integer.parseInt(idade.getText()), cpf.getText());
+			Conta contaPessoa = new Conta(pessoa, emailstring, 0);
+			listaContas.add(contaPessoa);
+			menuConta(contaPessoa);
 		}
-		
-		if (cpf.getText().length() == 11) {
-			JOptionPane.showMessageDialog(null, "O CPF deve ter 11 caracteres", null, JOptionPane.PLAIN_MESSAGE);
-		}
-		
-		
+			
 		
 		
 		
@@ -159,4 +198,6 @@ public class Agencia {
 			break;
 		}	
 	}
+	
+	
 }
