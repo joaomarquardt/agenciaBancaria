@@ -56,7 +56,6 @@ public class Agencia {
 		String emailstring = email.getText();
 		String senhastring = String.copyValueOf(senha.getPassword());
 		
-		// Modificar isso aqui depois!!!!!
 		if (listaContas.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Esse email não está cadastrado no banco. Por favor, crie sua conta.", "[ERRO]", JOptionPane.PLAIN_MESSAGE);
 			menu();			
@@ -72,6 +71,8 @@ public class Agencia {
 					}
 				}
 			}
+			JOptionPane.showMessageDialog(null, "Esse email não está cadastrado no banco. Por favor, crie sua conta.", "[ERRO]", JOptionPane.PLAIN_MESSAGE);
+			menu();	
 		}
 		
 		
@@ -161,10 +162,7 @@ public class Agencia {
 			listaContas.add(contaPessoa);
 			menuConta(contaPessoa);
 		}
-			
-		
-		
-		
+				
 	}
 	
 	public static void menuConta(Conta contaPessoa) {
@@ -177,17 +175,23 @@ public class Agencia {
 		
 		switch (op) {
 		case 1:
-			// depositar();
+			try {
+				depositar(contaPessoa);
+			} catch (NegativeNumberException e) {
+				e.printStackTrace();
+			}
 			break;
 			
 		case 2:
-			//Depositar();
+			sacar(contaPessoa);
 			
 		case 3:
-			//Sacar();
+			//transferir();
 			
 		case 4:
-			//Transferir();
+			JOptionPane.showMessageDialog(null, contaPessoa, "[INFORMAÇÕES DA CONTA]", JOptionPane.PLAIN_MESSAGE);
+			menuConta(contaPessoa);
+			break;
 			
 		case 5:
 			menu();
@@ -198,6 +202,71 @@ public class Agencia {
 			break;
 		}	
 	}
+	
+	
+	// Melhorar o código do try/catch depois!
+	public static void depositar(Conta contaPessoa) throws NegativeNumberException {
+		int valor = 0;
+		try {
+			valor = Integer.parseInt(JOptionPane.showInputDialog(null, "Quanto deseja depositar? ", "Depósito", JOptionPane.QUESTION_MESSAGE));
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(null, "Por favor, digite apenas numeros.", "[ERRO]", JOptionPane.ERROR_MESSAGE);
+			depositar(contaPessoa);
+		} 	
+		if (valor < 0) {
+			// throw new NegativeNumberException("Não é possível depositar um número negativo!", "[ERRO]", depositar(contaPessoa));
+			JOptionPane.showMessageDialog(null, "Não é possível depositar um número negativo!", "[ERRO]", JOptionPane.ERROR_MESSAGE);
+			depositar(contaPessoa);
+		}
+		
+		int op = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja depositar R$" + valor + "?", null, JOptionPane.YES_NO_CANCEL_OPTION);
+		if (op == 0) {
+			contaPessoa.setSaldo(valor);
+			JOptionPane.showMessageDialog(null, "Depósito efetuado com sucesso!", null, JOptionPane.PLAIN_MESSAGE);
+			menuConta(contaPessoa);
+		} else if (op == 1) {
+			depositar(contaPessoa);
+		} else {
+			menuConta(contaPessoa);
+		}
+		/* if (NumberFormatException) {
+			throw new NegativeNumberException();
+		} */
+				
+	}
+	
+	public static void sacar(Conta contaPessoa) {
+		int valor = 0;
+		try {
+			valor = Integer.parseInt(JOptionPane.showInputDialog(null, "Quanto deseja sacar? (Saldo atual: R$" + contaPessoa.getSaldo() + ")", "Saque", JOptionPane.QUESTION_MESSAGE));
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(null, "Por favor, digite apenas numeros.", "[ERRO]", JOptionPane.ERROR_MESSAGE);
+			sacar(contaPessoa);
+		}
+			
+		if (valor > contaPessoa.getSaldo()) {
+			JOptionPane.showMessageDialog(null, "O valor digitado excede a sua quantia guardada na conta. Tente novamente.", "[ERRO]", JOptionPane.ERROR_MESSAGE);
+			sacar(contaPessoa);
+		} else if (valor <= 0){
+			JOptionPane.showMessageDialog(null, "Digite um valor válido para sacar!", "[ERRO]", JOptionPane.ERROR_MESSAGE);
+			sacar(contaPessoa);
+		}
+		
+		int op = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja sacar R$" + valor + "?", null, JOptionPane.YES_NO_CANCEL_OPTION);
+		if (op == 0) {
+			contaPessoa.setSaldo(contaPessoa.getSaldo() - valor);
+			JOptionPane.showMessageDialog(null, "Depósito efetuado com sucesso!", null, JOptionPane.PLAIN_MESSAGE);
+			menuConta(contaPessoa);
+		} else if (op == 1) {
+			sacar(contaPessoa);
+		} else {
+			menuConta(contaPessoa);
+		}
+	}
+	
+	/* public static void transferir(Conta contaPessoa) {
+		
+	} */
 	
 	
 }

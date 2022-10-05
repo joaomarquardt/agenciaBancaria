@@ -33,7 +33,7 @@ public class Conta {
 		return saldo;
 	}
 	public void setSaldo(double saldo) {
-		this.saldo = saldo;
+		this.saldo += saldo;
 	}
 
 
@@ -56,7 +56,13 @@ public class Conta {
 		this.senha = senha;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "[NOME]: " + this.pessoa.getNome() + " " + this.pessoa.getSobrenome() + "\n"
+			+  "[IDADE]: " + this.pessoa.getIdade() + "\n"
+			+  "[CPF]: " + this.pessoa.getCpf() + "\n"
+			+  "[EMAIL]: " + this.getEmail();
+	}
 	
 	
 }
